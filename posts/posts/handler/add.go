@@ -25,4 +25,6 @@ func (h *Handler) add(r *http.Request, w http.ResponseWriter) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+
 }

@@ -70,7 +70,7 @@ func TestHandler_add(t *testing.T) {
 	t.Run("should return 500 because the service failed for adding a new post", func(t *testing.T) {
 
 		const (
-			ID      = "a845975d-d584-4e78-8920-17ea70f32b5f"
+			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
 			content = "Today I feel ok"
 		)
 
@@ -87,25 +87,68 @@ func TestHandler_add(t *testing.T) {
 			mockService,
 		)
 
+		req := httptest.NewRequest(
+			http.MethodGet,
+			"/add",
+			bytes.NewBufferString(`{
+				"ID" : "`+ID+`",
+				"content" : "`+content+`"
+			}`),
+		)
+		rr := httptest.NewRecorder()
+
 		mockService.EXPECT().Add(posts.Post{
 			ID:      uuid.MustParse(ID),
 			Content: content,
 		}).Return(errors.New("someError"))
 
-		req := httptest.NewRequest(
-			http.MethodGet,
-			"/add",
-			bytes.NewBufferString(`{
-				"ID" : `+ID+`,
-				"content" : `+content+`
-			}`),
-		)
-		rr := httptest.NewRecorder()
-
 		h.add(req, rr)
 
 		if rr.Code != http.StatusInternalServerError {
 			t.Fatalf("expected 500, got %d", rr.Code)
+		}
+
+	})
+
+	t.Run("should return 201", func(t *testing.T) {
+
+		const (
+			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
+			content = "Today I feel ok"
+		)
+
+		serializer := serializer.HTTP{}
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockService := mockservice.NewMockServicer(ctrl)
+
+		h := New(
+			nil,
+			serializer,
+			mockService,
+		)
+
+		req := httptest.NewRequest(
+			http.MethodGet,
+			"/add",
+			bytes.NewBufferString(`{
+				"ID" : "`+ID+`",
+				"content" : "`+content+`"
+			}`),
+		)
+		rr := httptest.NewRecorder()
+
+		mockService.EXPECT().Add(posts.Post{
+			ID:      uuid.MustParse(ID),
+			Content: content,
+		}).Return(nil)
+
+		h.add(req, rr)
+
+		if rr.Code != http.StatusCreated {
+			t.Fatalf("expected 201, got %d", rr.Code)
 		}
 
 	})
