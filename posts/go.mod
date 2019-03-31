@@ -8,5 +8,6 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/rakyll/gotest v0.0.0-20180125184505-86f0749cd8cc // indirect
 )

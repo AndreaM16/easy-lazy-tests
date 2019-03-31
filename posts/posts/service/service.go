@@ -6,13 +6,19 @@ import (
 	"github.com/andream16/personal-go-projects/posts/posts"
 	"github.com/andream16/personal-go-projects/posts/posts/repository"
 
-	"github.com/google/uuid"
+	"github.com/pkg/errors"
+)
+
+// Service related errors.
+var (
+	ErrAlreadyExists = errors.New("post_already_exists")
+	ErrNotFound      = errors.New("post_not_found")
 )
 
 // Servicer is the service interface.
 type Servicer interface {
 	Add(posts.Post) error
-	Find(uuid.UUID) (*posts.Post, error)
+	Find(string) (*posts.Post, error)
 }
 
 // Service represents the service.

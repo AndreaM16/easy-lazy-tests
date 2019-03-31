@@ -4,6 +4,9 @@ import (
 	"net/http"
 
 	"github.com/andream16/personal-go-projects/posts/posts"
+	"github.com/andream16/personal-go-projects/posts/posts/service"
+
+	"github.com/pkg/errors"
 )
 
 func (h *Handler) add(r *http.Request, w http.ResponseWriter) {
@@ -20,9 +23,17 @@ func (h *Handler) add(r *http.Request, w http.ResponseWriter) {
 		return
 	}
 
-	if err := h.service.Add(post); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	err := h.service.Add(post)
+
+	if err != nil {
+		switch errors.Cause(err) {
+		case service.ErrAlreadyExists:
+			w.WriteHeader(http.StatusConflict)
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusCreated)

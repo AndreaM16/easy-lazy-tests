@@ -7,7 +7,6 @@ package mock_service
 import (
 	posts "github.com/andream16/personal-go-projects/posts/posts"
 	gomock "github.com/golang/mock/gomock"
-	uuid "github.com/google/uuid"
 	reflect "reflect"
 )
 
@@ -49,7 +48,7 @@ func (mr *MockServicerMockRecorder) Add(arg0 interface{}) *gomock.Call {
 }
 
 // Find mocks base method
-func (m *MockServicer) Find(arg0 uuid.UUID) (*posts.Post, error) {
+func (m *MockServicer) Find(arg0 string) (*posts.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
 	ret0, _ := ret[0].(*posts.Post)

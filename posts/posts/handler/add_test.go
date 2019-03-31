@@ -9,6 +9,7 @@ import (
 
 	"github.com/andream16/personal-go-projects/posts/internal/serializer"
 	"github.com/andream16/personal-go-projects/posts/posts"
+	"github.com/andream16/personal-go-projects/posts/posts/service"
 	mockservice "github.com/andream16/personal-go-projects/posts/posts/service/mock"
 
 	"github.com/golang/mock/gomock"
@@ -22,13 +23,12 @@ func TestHandler_add(t *testing.T) {
 		serializer := serializer.HTTP{}
 
 		h := New(
-			nil,
 			serializer,
 			nil,
 		)
 
 		req := httptest.NewRequest(
-			http.MethodGet,
+			http.MethodPost,
 			"/add",
 			nil,
 		)
@@ -47,13 +47,12 @@ func TestHandler_add(t *testing.T) {
 		serializer := serializer.HTTP{}
 
 		h := New(
-			nil,
 			serializer,
 			nil,
 		)
 
 		req := httptest.NewRequest(
-			http.MethodGet,
+			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{}`),
 		)
@@ -82,13 +81,12 @@ func TestHandler_add(t *testing.T) {
 		mockService := mockservice.NewMockServicer(ctrl)
 
 		h := New(
-			nil,
 			serializer,
 			mockService,
 		)
 
 		req := httptest.NewRequest(
-			http.MethodGet,
+			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{
 				"ID" : "`+ID+`",
@@ -110,6 +108,48 @@ func TestHandler_add(t *testing.T) {
 
 	})
 
+	t.Run("should return 409 because post already exists", func(t *testing.T) {
+
+		const (
+			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
+			content = "Today I feel ok"
+		)
+
+		serializer := serializer.HTTP{}
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockService := mockservice.NewMockServicer(ctrl)
+
+		h := New(
+			serializer,
+			mockService,
+		)
+
+		req := httptest.NewRequest(
+			http.MethodPost,
+			"/add",
+			bytes.NewBufferString(`{
+				"ID" : "`+ID+`",
+				"content" : "`+content+`"
+			}`),
+		)
+		rr := httptest.NewRecorder()
+
+		mockService.EXPECT().Add(posts.Post{
+			ID:      uuid.MustParse(ID),
+			Content: content,
+		}).Return(service.ErrAlreadyExists)
+
+		h.add(req, rr)
+
+		if rr.Code != http.StatusConflict {
+			t.Fatalf("expected 409, got %d", rr.Code)
+		}
+
+	})
+
 	t.Run("should return 201", func(t *testing.T) {
 
 		const (
@@ -125,13 +165,12 @@ func TestHandler_add(t *testing.T) {
 		mockService := mockservice.NewMockServicer(ctrl)
 
 		h := New(
-			nil,
 			serializer,
 			mockService,
 		)
 
 		req := httptest.NewRequest(
-			http.MethodGet,
+			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{
 				"ID" : "`+ID+`",
