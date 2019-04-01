@@ -12,5 +12,5 @@ type Post struct {
 
 // Valid returns true if the post is valid.
 func (p Post) Valid() bool {
-	return p.ID != uuid.Nil && p.Content != ""
+	return p.ID == uuid.Nil && p.Content != ""
 }

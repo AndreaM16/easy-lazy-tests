@@ -17,7 +17,7 @@ var (
 
 // Servicer is the service interface.
 type Servicer interface {
-	Add(posts.Post) error
+	Add(posts.Post) (*posts.Post, error)
 	Find(string) (*posts.Post, error)
 }
 

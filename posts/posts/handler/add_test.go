@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/andream16/personal-go-projects/posts/internal/serializer"
+	mockserializer "github.com/andream16/personal-go-projects/posts/internal/serializer/mock"
 	"github.com/andream16/personal-go-projects/posts/posts"
-	"github.com/andream16/personal-go-projects/posts/posts/service"
 	mockservice "github.com/andream16/personal-go-projects/posts/posts/service/mock"
 
 	"github.com/golang/mock/gomock"
@@ -68,10 +68,7 @@ func TestHandler_add(t *testing.T) {
 
 	t.Run("should return 500 because the service failed for adding a new post", func(t *testing.T) {
 
-		const (
-			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
-			content = "Today I feel ok"
-		)
+		const content = "Today I feel ok"
 
 		serializer := serializer.HTTP{}
 
@@ -89,16 +86,14 @@ func TestHandler_add(t *testing.T) {
 			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{
-				"ID" : "`+ID+`",
 				"content" : "`+content+`"
 			}`),
 		)
 		rr := httptest.NewRecorder()
 
 		mockService.EXPECT().Add(posts.Post{
-			ID:      uuid.MustParse(ID),
 			Content: content,
-		}).Return(errors.New("someError"))
+		}).Return(nil, errors.New("someError"))
 
 		h.add(req, rr)
 
@@ -108,22 +103,26 @@ func TestHandler_add(t *testing.T) {
 
 	})
 
-	t.Run("should return 409 because post already exists", func(t *testing.T) {
+	t.Run("should return 500 because the service failed for adding a new post", func(t *testing.T) {
 
-		const (
-			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
-			content = "Today I feel ok"
-		)
+		const content = "Today I feel ok"
 
-		serializer := serializer.HTTP{}
+		post := posts.Post{
+			Content: content,
+		}
+		newPost := &posts.Post{
+			ID:      uuid.New(),
+			Content: content,
+		}
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockService := mockservice.NewMockServicer(ctrl)
+		mockSerializer := mockserializer.NewMockSerializer(ctrl)
 
 		h := New(
-			serializer,
+			mockSerializer,
 			mockService,
 		)
 
@@ -131,30 +130,34 @@ func TestHandler_add(t *testing.T) {
 			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{
-				"ID" : "`+ID+`",
 				"content" : "`+content+`"
 			}`),
 		)
 		rr := httptest.NewRecorder()
 
+		mockSerializer.EXPECT().Deserialize(gomock.Any(), gomock.Any()).SetArg(1, post).Return(nil)
 		mockService.EXPECT().Add(posts.Post{
-			ID:      uuid.MustParse(ID),
 			Content: content,
-		}).Return(service.ErrAlreadyExists)
+		}).Return(newPost, nil)
+		mockSerializer.EXPECT().Serialize(newPost).Return(nil, errors.New("some error"))
 
 		h.add(req, rr)
 
-		if rr.Code != http.StatusConflict {
-			t.Fatalf("expected 409, got %d", rr.Code)
+		if rr.Code != http.StatusInternalServerError {
+			t.Fatalf("expected 500, got %d", rr.Code)
 		}
 
 	})
 
 	t.Run("should return 201", func(t *testing.T) {
 
-		const (
-			ID      = "fe07cfbe-2e44-4c4c-8c81-ec7dfbf84510"
-			content = "Today I feel ok"
+		const content = "Today I feel ok"
+		var (
+			ID   = uuid.New()
+			post = posts.Post{
+				ID:      ID,
+				Content: content,
+			}
 		)
 
 		serializer := serializer.HTTP{}
@@ -173,21 +176,37 @@ func TestHandler_add(t *testing.T) {
 			http.MethodPost,
 			"/add",
 			bytes.NewBufferString(`{
-				"ID" : "`+ID+`",
 				"content" : "`+content+`"
 			}`),
 		)
 		rr := httptest.NewRecorder()
 
 		mockService.EXPECT().Add(posts.Post{
-			ID:      uuid.MustParse(ID),
 			Content: content,
-		}).Return(nil)
+		}).Return(&posts.Post{
+			ID:      ID,
+			Content: content,
+		}, nil)
 
 		h.add(req, rr)
 
 		if rr.Code != http.StatusCreated {
 			t.Fatalf("expected 201, got %d", rr.Code)
+		}
+
+		var p posts.Post
+
+		err := serializer.Deserialize(rr.Body, &p)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if post.ID != p.ID {
+			t.Fatalf("expected ID %v, got %v", post.ID, p.ID)
+		}
+
+		if post.Content != p.Content {
+			t.Fatalf("expected Content %v, got %v", post.ID, p.ID)
 		}
 
 	})

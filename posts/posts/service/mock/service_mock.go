@@ -34,11 +34,12 @@ func (m *MockServicer) EXPECT() *MockServicerMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockServicer) Add(arg0 posts.Post) error {
+func (m *MockServicer) Add(arg0 posts.Post) (*posts.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*posts.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Add indicates an expected call of Add
