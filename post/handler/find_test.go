@@ -7,11 +7,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/andream16/personal-go-projects/posts/internal/serializer"
-	mockserializer "github.com/andream16/personal-go-projects/posts/internal/serializer/mock"
-	"github.com/andream16/personal-go-projects/posts/posts"
-	"github.com/andream16/personal-go-projects/posts/posts/service"
-	mockservice "github.com/andream16/personal-go-projects/posts/posts/service/mock"
+	"github.com/andream16/easy-lazy-tests/internal/serializer"
+	mockserializer "github.com/andream16/easy-lazy-tests/internal/serializer/mock"
+	"github.com/andream16/easy-lazy-tests/post"
+	"github.com/andream16/easy-lazy-tests/post/service"
+	mockservice "github.com/andream16/easy-lazy-tests/post/service/mock"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
@@ -116,7 +116,7 @@ func TestHandler_find(t *testing.T) {
 	t.Run("should return 500 because some error occurred during serialization of a found post", func(t *testing.T) {
 
 		ID := uuid.New().String()
-		post := &posts.Post{
+		post := &post.Post{
 			ID:      uuid.MustParse(ID),
 			Content: "Meh, sounds good",
 		}
@@ -157,11 +157,13 @@ func TestHandler_find(t *testing.T) {
 
 	t.Run("should return 200 for an existing post", func(t *testing.T) {
 
-		ID := uuid.New().String()
-		post := &posts.Post{
-			ID:      uuid.MustParse(ID),
-			Content: "Meh, sounds good",
-		}
+		var (
+			ID           = uuid.New().String()
+			expectedPost = &post.Post{
+				ID:      uuid.MustParse(ID),
+				Content: "Meh, sounds good",
+			}
+		)
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -184,7 +186,7 @@ func TestHandler_find(t *testing.T) {
 		q.Add("ID", ID)
 		req.URL.RawQuery = q.Encode()
 
-		mockService.EXPECT().Find(ID).Return(post, nil)
+		mockService.EXPECT().Find(ID).Return(expectedPost, nil)
 
 		rr := httptest.NewRecorder()
 
@@ -194,19 +196,19 @@ func TestHandler_find(t *testing.T) {
 			t.Fatalf("expected 200, got %d", rr.Code)
 		}
 
-		var p posts.Post
+		var p post.Post
 
 		err := serializer.Deserialize(rr.Body, &p)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if post.ID != p.ID {
-			t.Fatalf("expected ID %v, got %v", post.ID, p.ID)
+		if expectedPost.ID != p.ID {
+			t.Fatalf("expected ID %v, got %v", expectedPost.ID, p.ID)
 		}
 
-		if post.Content != p.Content {
-			t.Fatalf("expected Content %v, got %v", post.ID, p.ID)
+		if expectedPost.Content != p.Content {
+			t.Fatalf("expected Content %v, got %v", expectedPost.ID, p.ID)
 		}
 
 	})

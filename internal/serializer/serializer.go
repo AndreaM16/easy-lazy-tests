@@ -1,4 +1,4 @@
-//go:generate mockgen -self_package github.com/andream16/personal-go-projects/posts/internal/serializer -source=serializer.go -destination mock/serializer_mock.go
+//go:generate mockgen -self_package github.com/andream16/easy-lazy-tests/internal/serializer -source=serializer.go -destination mock/serializer_mock.go
 
 package serializer
 

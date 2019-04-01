@@ -1,10 +1,10 @@
-//go:generate mockgen -self_package github.com/andream16/personal-go-projects/posts/posts/service -source=service.go -destination mock/service_mock.go
+//go:generate mockgen -self_package github.com/andream16/easy-lazy-tests/posts/service -source=service.go -destination mock/service_mock.go
 
 package service
 
 import (
-	"github.com/andream16/personal-go-projects/posts/posts"
-	"github.com/andream16/personal-go-projects/posts/posts/repository"
+	"github.com/andream16/easy-lazy-tests/post"
+	"github.com/andream16/easy-lazy-tests/post/repository"
 
 	"github.com/pkg/errors"
 )
@@ -17,8 +17,8 @@ var (
 
 // Servicer is the service interface.
 type Servicer interface {
-	Add(posts.Post) (*posts.Post, error)
-	Find(string) (*posts.Post, error)
+	Add(post.Post) (*post.Post, error)
+	Find(string) (*post.Post, error)
 }
 
 // Service represents the service.

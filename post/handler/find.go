@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/andream16/personal-go-projects/posts/posts/service"
+	"github.com/andream16/easy-lazy-tests/post/service"
 
 	"github.com/pkg/errors"
 )

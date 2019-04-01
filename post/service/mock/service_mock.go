@@ -5,7 +5,7 @@
 package mock_service
 
 import (
-	posts "github.com/andream16/personal-go-projects/posts/posts"
+	post "github.com/andream16/easy-lazy-tests/post"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -34,10 +34,10 @@ func (m *MockServicer) EXPECT() *MockServicerMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockServicer) Add(arg0 posts.Post) (*posts.Post, error) {
+func (m *MockServicer) Add(arg0 post.Post) (*post.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", arg0)
-	ret0, _ := ret[0].(*posts.Post)
+	ret0, _ := ret[0].(*post.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -49,10 +49,10 @@ func (mr *MockServicerMockRecorder) Add(arg0 interface{}) *gomock.Call {
 }
 
 // Find mocks base method
-func (m *MockServicer) Find(arg0 string) (*posts.Post, error) {
+func (m *MockServicer) Find(arg0 string) (*post.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
-	ret0, _ := ret[0].(*posts.Post)
+	ret0, _ := ret[0].(*post.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

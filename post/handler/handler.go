@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/andream16/personal-go-projects/posts/internal/serializer"
-	"github.com/andream16/personal-go-projects/posts/posts/service"
+	"github.com/andream16/easy-lazy-tests/internal/serializer"
+	"github.com/andream16/easy-lazy-tests/post/service"
 )
 
 // Handler represents an handler.

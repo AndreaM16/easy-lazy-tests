@@ -3,12 +3,12 @@ package handler
 import (
 	"net/http"
 
-	"github.com/andream16/personal-go-projects/posts/posts"
+	"github.com/andream16/easy-lazy-tests/post"
 )
 
 func (h *Handler) add(r *http.Request, w http.ResponseWriter) {
 
-	var post posts.Post
+	var post post.Post
 
 	if error := h.serializer.Deserialize(r.Body, &post); error != nil {
 		w.WriteHeader(http.StatusBadRequest)
