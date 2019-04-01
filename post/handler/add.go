@@ -27,8 +27,8 @@ func (h *Handler) add(r *http.Request, w http.ResponseWriter) {
 		return
 	}
 
-	b, error := h.serializer.Serialize(newPost)
-	if error != nil {
+	b, err := h.serializer.Serialize(newPost)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
