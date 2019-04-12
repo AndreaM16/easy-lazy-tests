@@ -1,2 +1,3 @@
-# personal-go-projects
-Go projects used for personal web site
+# easy-lazy-tests [![CircleCI](https://circleci.com/gh/AndreaM16/easy-lazy-tests/easy-lazy-tests/master.svg?style=svg)](https://circleci.com/gh/AndreaM16/easy-lazy-tests/easy-lazy-tests/master) [![Go Report Card](https://goreportcard.com/badge/github.com/AndreaM16/easy-lazy-tests)](https://goreportcard.com/report/github.com/AndreaM16/easy-lazy-tests) [![MIT Licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/andream16/easy-lazy-tests/master/LICENSE)
+
+Lazy tests for http handlers.
