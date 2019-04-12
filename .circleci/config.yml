@@ -17,7 +17,7 @@ jobs:
 
       - run:
           command: |
-            make test | tee ${TEST_RESULTS}/go-test.out
+            go test -v -cover -race ./... | tee ${TEST_RESULTS}/go-test.out
       - run: make
 
       - save_cache:
