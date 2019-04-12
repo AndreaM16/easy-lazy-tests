@@ -35,7 +35,6 @@ func (m *MockServicer) EXPECT() *MockServicerMockRecorder {
 
 // Add mocks base method
 func (m *MockServicer) Add(arg0 post.Post) (*post.Post, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", arg0)
 	ret0, _ := ret[0].(*post.Post)
 	ret1, _ := ret[1].(error)
@@ -44,13 +43,11 @@ func (m *MockServicer) Add(arg0 post.Post) (*post.Post, error) {
 
 // Add indicates an expected call of Add
 func (mr *MockServicerMockRecorder) Add(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockServicer)(nil).Add), arg0)
 }
 
 // Find mocks base method
 func (m *MockServicer) Find(arg0 string) (*post.Post, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
 	ret0, _ := ret[0].(*post.Post)
 	ret1, _ := ret[1].(error)
@@ -59,6 +56,5 @@ func (m *MockServicer) Find(arg0 string) (*post.Post, error) {
 
 // Find indicates an expected call of Find
 func (mr *MockServicerMockRecorder) Find(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockServicer)(nil).Find), arg0)
 }

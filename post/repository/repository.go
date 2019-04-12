@@ -1,3 +1,5 @@
+//go:generate mockgen -self_package github.com/andream16/easy-lazy-tests/posts/repository -source=repository.go -destination mock/repository_mock.go
+
 package repository
 
 import (

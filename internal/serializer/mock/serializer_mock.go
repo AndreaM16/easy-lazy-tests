@@ -35,7 +35,6 @@ func (m *MockSerializer) EXPECT() *MockSerializerMockRecorder {
 
 // Serialize mocks base method
 func (m *MockSerializer) Serialize(arg0 interface{}) ([]byte, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Serialize", arg0)
 	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
@@ -44,13 +43,11 @@ func (m *MockSerializer) Serialize(arg0 interface{}) ([]byte, error) {
 
 // Serialize indicates an expected call of Serialize
 func (mr *MockSerializerMockRecorder) Serialize(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Serialize", reflect.TypeOf((*MockSerializer)(nil).Serialize), arg0)
 }
 
 // Deserialize mocks base method
 func (m *MockSerializer) Deserialize(arg0 io.Reader, arg1 interface{}) error {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Deserialize", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -58,6 +55,5 @@ func (m *MockSerializer) Deserialize(arg0 io.Reader, arg1 interface{}) error {
 
 // Deserialize indicates an expected call of Deserialize
 func (mr *MockSerializerMockRecorder) Deserialize(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deserialize", reflect.TypeOf((*MockSerializer)(nil).Deserialize), arg0, arg1)
 }
